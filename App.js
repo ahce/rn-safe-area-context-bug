@@ -19,28 +19,36 @@ import {
   Header,
   TransitionPresets,
 } from '@react-navigation/stack';
+import {enableScreens} from 'react-native-screens';
+import {createNativeStackNavigator} from 'react-native-screens/native-stack';
 
 import {
   Header as RNHeader,
   LearnMoreLinks,
 } from 'react-native/Libraries/NewAppScreen';
 
+const USE_NATIVE_STACK = false;
+
+enableScreens(USE_NATIVE_STACK);
+
 const Screen1 = ({navigation}) => (
-  <SafeAreaView style={{flex:1}}>
+  <SafeAreaView style={{flex: 1}} edges={['bottom', 'left', 'right']}>
     <RNHeader />
     <Button title="NAVIGATE" onPress={() => navigation.navigate('Screen2')} />
   </SafeAreaView>
 );
 
 const Screen2 = () => (
-  <SafeAreaView style={{flex:1}}>
+  <SafeAreaView style={{flex: 1}} edges={['bottom', 'left', 'right']}>
     <ScrollView>
       <LearnMoreLinks />
     </ScrollView>
   </SafeAreaView>
 );
 
-const Stack = createStackNavigator();
+const Stack = USE_NATIVE_STACK
+  ? createNativeStackNavigator()
+  : createStackNavigator();
 
 const App = () => (
   <SafeAreaProvider initialMetrics={initialWindowMetrics}>
@@ -50,6 +58,7 @@ const App = () => (
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
           animationEnabled: Platform.OS === 'android',
+          stackAnimation: Platform.OS === 'android' ? 'default' : 'none',
           header: (props) => (
             <SafeAreaView edges={['left', 'right', 'top']}>
               <Header
